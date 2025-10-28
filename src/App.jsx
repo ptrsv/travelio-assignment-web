@@ -4,7 +4,7 @@ import { FaStar, FaRegStar, FaStarHalfAlt, FaHeart, FaRegHeart } from 'react-ico
 import './App.css';
 
 // Use .env or default fallback
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000/books';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000';
 
 function App() {
   const [q, setq] = useState('');
@@ -16,7 +16,7 @@ function App() {
 
   const resetWishlist = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/reset-wishlist`);
+      await axios.post(`${API_BASE_URL}/books/reset-wishlist`);
       setWishlist([]);
     } catch (error) {
       console.error('Error resetting wishlist:', error);
@@ -32,7 +32,7 @@ function App() {
 
   const fetchWishlist = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/wishlist`);
+      const response = await axios.get(`${API_BASE_URL}/books/wishlist`);
       if (Array.isArray(response.data)) {
         setWishlist(response.data);
       } else {
@@ -52,7 +52,7 @@ function App() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`${API_BASE_URL}/list?q=${encodeURIComponent(q)}`);
+      const response = await axios.get(`${API_BASE_URL}/books/list?q=${encodeURIComponent(q)}`);
       setBooks(response.data.items || []);
       setActiveTab('search');
       if (!response.data.items || response.data.items.length === 0) {
@@ -76,7 +76,7 @@ function App() {
     if (isInWishlist(title)) {
       // 🗑 Remove from wishlist
       try {
-        await axios.delete(`${API_BASE_URL}/wishlist/${encodeURIComponent(title)}`);
+        await axios.delete(`${API_BASE_URL}/books/wishlist/${encodeURIComponent(title)}`);
         setWishlist(wishlist.filter((item) => item.title !== title));
       } catch (error) {
         console.error('Error removing from wishlist:', error);
@@ -95,7 +95,7 @@ function App() {
         ratings_count: book.volumeInfo.ratingsCount || 0,
       };
       try {
-        await axios.post(`${API_BASE_URL}/wishlist`, wishlistItem);
+        await axios.post(`${API_BASE_URL}/books/wishlist`, wishlistItem);
         await fetchWishlist();
       } catch (error) {
         console.error('Error adding to wishlist:', error);
